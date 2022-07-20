@@ -51,6 +51,22 @@ class BaseFunctionRuntime:
         runtime.install_packages(packages=package_info.pip_dependencies)
         runtime.run_executable(executable_path)
 
+    @classmethod
+    def main(cls) -> None:
+        from argparse import ArgumentParser
+
+        parser = ArgumentParser(description="Function runtime")
+
+        parser.add_argument(
+            "executable_path",
+            type=Path,
+            help="the local file path of the executable",
+        )
+
+        args = parser.parse_args()
+
+        cls.execute(args.executable_path)
+
 
 def _validate_executable_path(executable_path: Path) -> None:
     if not executable_path:
@@ -83,21 +99,5 @@ def _run_pip_install(packages: Sequence[str]) -> None:
     subprocess.check_call(pip_install)  # nosec
 
 
-def main() -> None:
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser(description="Function runtime")
-
-    parser.add_argument(
-        "executable_path",
-        type=Path,
-        help="the local file path of the executable",
-    )
-
-    args = parser.parse_args()
-
-    BaseFunctionRuntime.execute(args.executable_path)
-
-
 if __name__ == "__main__":
-    main()
+    BaseFunctionRuntime.main()
