@@ -1,8 +1,9 @@
 import os
 import runpy
 import sys
+from argparse import ArgumentParser
 from pathlib import Path
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Optional, Sequence
 
 from layer.executables.packager import get_function_package_info
 
@@ -16,9 +17,6 @@ class BaseFunctionRuntime:
     def initialise(self) -> None:
         """Any initialisation required to run the function."""
 
-    def process_function_output(self, output: Any, *args: Any, **kwargs: Any) -> None:
-        pass
-
     @property
     def executable_path(self) -> Path:
         return self._executable_path
@@ -29,14 +27,12 @@ class BaseFunctionRuntime:
 
     def __call__(self, func: Callable[..., Any]) -> Any:
         """Called from the executable to run the function."""
-        output = func()
-        self.process_function_output(output)
-        return output
+        return func()
 
-    def run_executable(self, executable_path: Path) -> Any:
+    def run_executable(self) -> Any:
         """Runs the packaged function."""
         runpy.run_path(
-            str(executable_path),
+            str(self.executable_path),
             run_name="__main__",
             init_globals={"__function_runtime": self},
         )
@@ -49,12 +45,12 @@ class BaseFunctionRuntime:
         runtime = cls(executable_path, *args, **kwargs)
         runtime.initialise()
         runtime.install_packages(packages=package_info.pip_dependencies)
-        runtime.run_executable(executable_path)
+        runtime.run_executable()
 
     @classmethod
-    def main(cls) -> None:
-        from argparse import ArgumentParser
-
+    def main(
+        cls, add_cli_args: Optional[Callable[[ArgumentParser], None]] = None
+    ) -> None:
         parser = ArgumentParser(description="Function runtime")
 
         parser.add_argument(
@@ -63,9 +59,12 @@ class BaseFunctionRuntime:
             help="the local file path of the executable",
         )
 
+        if add_cli_args is not None:
+            add_cli_args(parser)
+
         args = parser.parse_args()
 
-        cls.execute(args.executable_path)
+        cls.execute(**vars(args))
 
 
 def _validate_executable_path(executable_path: Path) -> None:
