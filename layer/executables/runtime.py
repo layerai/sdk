@@ -91,12 +91,22 @@ def _run_pip_install(packages: Sequence[str]) -> None:
         "pip",
         "--quiet",
         "--disable-pip-version-check",
+        "--no-color",
         "install",
     ] + list(packages)
 
     import subprocess  # nosec
 
-    subprocess.check_call(pip_install)  # nosec
+    result = subprocess.run(
+        pip_install,
+        shell=False,  # nosec
+        text=True,
+        check=False,
+        capture_output=True,
+    )
+
+    if result.returncode != 0:
+        raise FunctionRuntimeError(f"package instalation failed:\n{result.stderr}")
 
 
 if __name__ == "__main__":
