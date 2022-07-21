@@ -36,12 +36,15 @@ class ProjectServiceClient:
         self,
         config: ClientConfig,
         logger: Logger,
+        service: Optional[ProjectAPIStub] = None,
     ):
         self._grpc_gateway_address = config.grpc_gateway_address
         self._logger = logger
         self._access_token = config.access_token
         self._do_verify_ssl = config.grpc_do_verify_ssl
         self._logs_file_path = config.logs_file_path
+        if service is not None:
+            self._service = service
 
     @contextmanager
     def init(self) -> Iterator["ProjectServiceClient"]:
