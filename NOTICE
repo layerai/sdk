@@ -11,3 +11,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+The class layer.contracts.logged_data.Video contains code originating
+from the pytorch project (https://github.com/pytorch/pytorch/blob/ed0091f8db1265449f13e2bdd1647bf873bd1fea/torch/utils/tensorboard/summary.py#L507).

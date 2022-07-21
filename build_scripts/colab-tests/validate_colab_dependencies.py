@@ -21,6 +21,7 @@ IGNORED_VIOLATIONS = {
     "Version check failed for 'pyyaml'. Colab has 3.13, but 'mlflow-skinny' requires >=5.1",
     "Version check failed for 'pyyaml'. Colab has 3.13, but 'transformers' requires >=5.1",
     "Version check failed for 'urllib3'. Colab has 1.24.3, but 'botocore' requires >=1.25.4,<1.27",
+    "Version check failed for 'pillow'. Colab has 7.1.2, but 'imageio' requires >=8.3.2",
 }
 
 

@@ -10,7 +10,7 @@ import requests  # type: ignore
 from layerapi.api.value.logged_data_type_pb2 import LoggedDataType
 
 from layer.clients.layer import LayerClient
-from layer.contracts.logged_data import Image, Markdown, ModelMetricPoint
+from layer.contracts.logged_data import Image, Markdown, ModelMetricPoint, Video
 
 from .utils import get_base_module_list, has_allowed_extension
 
@@ -77,10 +77,13 @@ class LogDataRunner:
                     assert isinstance(value, dict)
                 dataframe = LogDataRunner._convert_dict_to_dataframe(value)
                 self._log_dataframe(tag=tag, df=dataframe)
-            elif LogDataRunner._is_video(value):
+            elif LogDataRunner._is_video_from_path(value):
                 if TYPE_CHECKING:
                     assert isinstance(value, Path)
                 self._log_video_from_path(tag=tag, path=value)
+            elif isinstance(value, Video):
+                video_path = value.get_video()
+                self._log_video_from_path(tag=tag, path=video_path)
             elif Image.is_image(value):
                 if TYPE_CHECKING:
                     import PIL
@@ -310,7 +313,7 @@ class LogDataRunner:
         return True
 
     @staticmethod
-    def _is_video(value: Any) -> bool:
+    def _is_video_from_path(value: Any) -> bool:
         return isinstance(value, Path) and has_allowed_extension(
             value, [".mp4", ".webm", ".ogg"]
         )

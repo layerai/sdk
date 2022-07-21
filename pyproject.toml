@@ -72,6 +72,8 @@ numpy = { version = "<1.22", python = "~3.7" } # 1.22 doesn't support python 3.7
 requests = ">=2.23.0"
 nvsmi = "^0.4.2"
 psutil = "^5.9.1"
+moviepy = "^0.2.3.5"
+imageio = "<=2.4.1"
 
 [tool.poetry.dev-dependencies]
 # h5py is a tensorflow transitive dependency and we limit it because of conda-miniforge

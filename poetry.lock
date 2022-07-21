@@ -705,11 +705,11 @@ opentracing = ["opentracing (>=2.0.0)"]
 
 [[package]]
 name = "decorator"
-version = "5.1.1"
+version = "4.4.2"
 description = "Decorators for Humans"
-category = "dev"
+category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=2.6, !=3.0.*, !=3.1.*"
 
 [[package]]
 name = "dill"
@@ -1011,6 +1011,24 @@ description = "Internationalized Domain Names in Applications (IDNA)"
 category = "main"
 optional = false
 python-versions = ">=3.5"
+
+[[package]]
+name = "imageio"
+version = "2.4.1"
+description = "Library for reading and writing a wide range of image, video, scientific, and volumetric data formats."
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.dependencies]
+numpy = "*"
+pillow = "*"
+
+[package.extras]
+fits = ["astropy"]
+full = ["simpleitk", "astropy", "gdal"]
+gdal = ["gdal"]
+simpleitk = ["simpleitk"]
 
 [[package]]
 name = "importlib-metadata"
@@ -1317,6 +1335,25 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "moviepy"
+version = "0.2.3.5"
+description = "Video editing with Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+decorator = ">=4.0.2,<5.0"
+imageio = ">=2.1.2,<3.0"
+numpy = "*"
+tqdm = ">=4.11.2,<5.0"
+
+[package.extras]
+doc = ["numpydoc (>=0.6.0,<1.0)", "sphinx_rtd_theme (>=0.1.10b0,<1.0)", "Sphinx (>=1.5.2,<2.0)", "pygame (>=1.9.3,<2.0)"]
+optional = ["youtube-dl", "opencv-python (>=3.0,<4.0)", "scipy (>=0.19.0,<1.0)", "scikit-image (>=0.13.0,<1.0)", "scikit-learn", "matplotlib (>=2.0.0,<3.0)"]
+test = ["coveralls (>=1.1,<2.0)", "pytest-cov (>=2.5.1,<3.0)", "pytest (>=3.0.0,<4.0)", "requests (>=2.8.1,<3.0)"]
+
+[[package]]
 name = "multidict"
 version = "6.0.2"
 description = "multidict implementation"
@@ -1520,7 +1557,7 @@ python-versions = "*"
 name = "pillow"
 version = "9.2.0"
 description = "Python Imaging Library (Fork)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -2647,7 +2684,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7.1,<3.11"
-content-hash = "b0ed999fa254d818d0fb065cecf2a234810f15863f10e45d9c37000761b1d812"
+content-hash = "a9dc9ecb8c0a0f9ff124fbbc7f8280f71b730349cfd8397008130dbaac8199ba"
 
 [metadata.files]
 absl-py = [
@@ -3025,8 +3062,8 @@ ddtrace = [
     {file = "ddtrace-0.60.0.tar.gz", hash = "sha256:bde43563ff295b4ae19c840d8f710d0c70e6b5a6fdec2bdfd996124ebf9de76a"},
 ]
 decorator = [
-    {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
-    {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
+    {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
+    {file = "decorator-4.4.2.tar.gz", hash = "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"},
 ]
 dill = [
     {file = "dill-0.3.5.1-py2.py3-none-any.whl", hash = "sha256:33501d03270bbe410c72639b350e941882a8b0fd55357580fbc873fba0c59302"},
@@ -3221,6 +3258,9 @@ humanize = [
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
+]
+imageio = [
+    {file = "imageio-2.4.1.tar.gz", hash = "sha256:16b8077bc8a5fa7a58b3e744f7ecbb156d8c088132df31e0f4f546c98de3514a"},
 ]
 importlib-metadata = [
     {file = "importlib_metadata-4.12.0-py3-none-any.whl", hash = "sha256:7401a975809ea1fdc658c3aa4f78cc2195a0e019c5cbc4c06122884e9ae80c23"},
@@ -3466,6 +3506,9 @@ mlflow-skinny = [
 more-itertools = [
     {file = "more-itertools-8.13.0.tar.gz", hash = "sha256:a42901a0a5b169d925f6f217cd5a190e32ef54360905b9c39ee7db5313bfec0f"},
     {file = "more_itertools-8.13.0-py3-none-any.whl", hash = "sha256:c5122bffc5f104d37c1626b8615b511f3427aa5389b94d61e5ef8236bfbc3ddb"},
+]
+moviepy = [
+    {file = "moviepy-0.2.3.5.tar.gz", hash = "sha256:536ea61c2c7d276ee65daf2da8a1d2e34bbafd524d6e8a20fde38ce9bfbd2dcb"},
 ]
 multidict = [
     {file = "multidict-6.0.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:0b9e95a740109c6047602f4db4da9949e6c5945cefbad34a1299775ddc9a62e2"},

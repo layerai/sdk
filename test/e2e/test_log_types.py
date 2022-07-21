@@ -5,7 +5,7 @@ from sklearn.svm import SVC
 
 import layer
 from layer.clients.layer import LayerClient
-from layer.contracts.logged_data import LoggedDataType
+from layer.contracts.logged_data import LoggedDataType, Video
 from layer.contracts.projects import Project
 from layer.decorators import dataset, model, pip_requirements
 from test.e2e.assertion_utils import E2ETestAsserter
@@ -120,6 +120,65 @@ def test_markdown_logged(initialized_project: Project, client: LayerClient):
     assert logged_data.data == markdown
 
 
+# Taken mostly from https://stackoverflow.com/q/60180386/126199
+def create_sample_video_pytorch_tensor():
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import torch
+
+    matplotlib.use("Agg")
+
+    def fig2data(fig):
+        # draw the renderer
+        fig.canvas.draw()
+        # Get the RGB buffer from the figure
+        data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+        data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        return data
+
+    size = 50
+    x = np.random.uniform(0, 2.0, size=500)
+    y = np.random.uniform(0, 2.0, size=500)
+    trajectory_len = size
+    trajectory_indices = np.arange(trajectory_len)
+    width, height = 3, 2
+
+    # tensorboard takes video of shape (N,T,C,H,W)
+    video_array = np.zeros(
+        shape=(1, trajectory_len, 3, height * 100, width * 100), dtype=np.uint8
+    )
+
+    for trajectory_idx in trajectory_indices:
+        fig, axes = plt.subplots(
+            1, 2, figsize=(width, height), gridspec_kw={"width_ratios": [1, 0.05]}
+        )
+        fig.suptitle("Example Trajectory")
+        # plot the first trajectory
+        axes[0].scatter(
+            x=[x[trajectory_idx]],
+            y=[y[trajectory_idx]],
+            c=[trajectory_indices[trajectory_idx]],
+            s=4,
+            vmin=0,
+            vmax=trajectory_len,
+            cmap=plt.cm.jet,
+        )
+
+        axes[0].set_xlim(-0.25, 2.25)
+        axes[0].set_ylim(-0.25, 2.25)
+
+        # extract numpy array of figure
+        data = fig2data(fig)
+
+        # close figure to save memory
+        plt.close(fig=fig)
+
+        video_array[0, trajectory_idx, :, :, :] = np.transpose(data, (2, 0, 1))
+
+    return torch.from_numpy(video_array)
+
+
 def test_image_and_video_logged(initialized_project: Project, client: LayerClient):
     # given
     ds_name = "multimedia"
@@ -128,6 +187,7 @@ def test_image_and_video_logged(initialized_project: Project, client: LayerClien
     image_path_tag = "image_path_tag"
     video_path_tag = "video_path_tag"
     stepped_pil_image_tab = "stepped_pil_image_tag"
+    pytorch_tensor_video_tag = "pytorch_tensor_video_tag"
 
     @dataset(ds_name)
     def multimedia():
@@ -144,6 +204,9 @@ def test_image_and_video_logged(initialized_project: Project, client: LayerClien
 
         video_path = Path(f"{os.getcwd()}/test/e2e/assets/log_assets/layer_video.mp4")
         layer.log({video_path_tag: video_path})
+
+        pytorch_video_tensor = create_sample_video_pytorch_tensor()
+        layer.log({pytorch_tensor_video_tag: Video(pytorch_video_tensor)})
 
         return pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
