@@ -223,11 +223,11 @@ class DataCatalogClient:
         asset_path: AssetPath,
         project_id: uuid.UUID,
         description: str,
-        function_home_dir: Path,
         fabric: str,
         func_source: str,
         entrypoint: str,
         environment: str,
+        function_home_dir: Optional[Path] = None,
     ) -> str:
         self._logger.debug(
             "Adding or updating a dataset with name %r",
@@ -253,13 +253,17 @@ class DataCatalogClient:
     def _get_pb_python_dataset(
         self,
         asset_path: AssetPath,
-        function_home_dir: Path,
         fabric: str,
         func_source: str,
         entrypoint: str,
         environment: str,
+        function_home_dir: Optional[Path] = None,
     ) -> PBPythonDataset:
-        s3_path = self._upload_dataset_source(asset_path, function_home_dir)
+        s3_path = (
+            self._upload_dataset_source(asset_path, function_home_dir)
+            if function_home_dir
+            else None
+        )
         language_version = _language_version()
         return PBPythonDataset(
             s3_path=s3_path,
